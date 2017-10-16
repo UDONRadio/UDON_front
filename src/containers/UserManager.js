@@ -69,7 +69,7 @@ class UserManager extends Component {
   }
 
   login ({ username, password }, onError) {
-    fetch(SERVER.api_url + '/auth/login/', {
+    fetch(SERVER.api_url + '/auth/token/create/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
