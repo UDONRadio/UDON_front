@@ -1,16 +1,10 @@
 import React, { Component } from 'react';
 import { Modal, Menu } from 'semantic-ui-react';
 
+import 'whatwg-fetch';
 import { LoginForm, MainWindow } from './';
 import { Logo, RegisterForm, RecoverForm } from '../components';
 import { request, SERVER } from '../networkGenerics';
-
-/*
-** TODO: wrap api calls with error handling on authenticated requests in case
-** token expired for instance.
-** TODO: logout
-** TODO: register
-*/
 
 class UserManager extends Component {
 
@@ -22,6 +16,9 @@ class UserManager extends Component {
     this.getUserInfo = this.getUserInfo.bind(this);
     this.request = this.request.bind(this);
     this.login = this.login.bind(this);
+    this.register = this.register.bind(this);
+    this.recover = this.recover.bind(this);
+    this.logout = this.logout.bind(this);
     this.state = {
       showLoginRegisterModal: this.showLoginRegisterModal,
       logged_in: false,
@@ -83,11 +80,27 @@ class UserManager extends Component {
   }
 
   register () {
-    console.log('register');
+    console.log("register");
   }
 
   recover () {
     console.log('recover');
+  }
+
+  logout () {
+    fetch(SERVER.api_url + '/auth/token/destroy/', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Token ' + this.state.auth_token,
+      }
+    }).then(response => {
+      if (response.ok) {
+        this.setState({
+          'logged_in' : false,
+          'username': null
+        })
+      }
+    }) // XXX: Need error handling
   }
 
   render () {
@@ -98,7 +111,7 @@ class UserManager extends Component {
     };
     const CurrentForm = forms[this.state.__activeModalForm];
     return <div>
-      <MainWindow user={this.state}/>
+      <MainWindow user={{'logout': this.logout, ...this.state}}/>
       <Modal open={this.state.__showModal} onClose={this.hideLoginRegisterModal} size='mini'>
         <Modal.Content>
           <Logo/>

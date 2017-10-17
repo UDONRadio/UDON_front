@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Form, Message } from 'semantic-ui-react';
 
-
 /*
 ** TODO: handle form submission errors
 */
