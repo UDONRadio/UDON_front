@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { Modal, Menu } from 'semantic-ui-react';
 
 import 'whatwg-fetch';
-import { LoginForm, MainWindow } from './';
-import { Logo, RegisterForm, RecoverForm } from '../components';
+import { LoginForm, RegisterForm, MainWindow } from './';
+import { Logo, RecoverForm } from '../components';
 import { request, SERVER } from '../networkGenerics';
 
 class UserManager extends Component {
@@ -23,7 +23,7 @@ class UserManager extends Component {
       showLoginRegisterModal: this.showLoginRegisterModal,
       logged_in: false,
       username: null,
-      __showModal: true,
+      __showModal: false,
       __activeModalForm: 'log in'
     };
   }
@@ -79,8 +79,18 @@ class UserManager extends Component {
       .catch(onError);
   }
 
-  register () {
-    console.log("register");
+  register ({ username, password, email }, onError) {
+    request(SERVER.api_url + '/auth/users/create/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({'username': username, 'password': password, 'email': email})
+    })
+      .then((response) => {
+        this.login({username: username, password: password}, () => (void(0)));
+      })
+      .catch(onError);
   }
 
   recover () {

@@ -10,7 +10,7 @@ const UserInfo = (props) => {
       <a style={{'cursor':'pointer'}} onClick={props.user.logout}>logout</a>
     </span>
   else
-    return <a onClick={props.user.showLoginRegisterModal}>
+    return <a style={{'cursor':'pointer'}} onClick={props.user.showLoginRegisterModal}>
       Sign in / register
     </a>
 }
