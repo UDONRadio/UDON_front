@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import { Modal, Menu } from 'semantic-ui-react';
-import 'whatwg-fetch';
 
 import { LoginForm, MainWindow } from './';
 import { Logo, RegisterForm, RecoverForm } from '../components';
-import { checkStatus, parseJSON, SERVER } from '../networkGenerics';
+import { request, SERVER } from '../networkGenerics';
 
 /*
 ** TODO: wrap api calls with error handling on authenticated requests in case
@@ -21,7 +20,7 @@ class UserManager extends Component {
     this.hideLoginRegisterModal = this.hideLoginRegisterModal.bind(this);
     this.changeModalForm = this.changeModalForm.bind(this);
     this.getUserInfo = this.getUserInfo.bind(this);
-    this.fetch = this.fetch.bind(this);
+    this.request = this.request.bind(this);
     this.login = this.login.bind(this);
     this.state = {
       showLoginRegisterModal: this.showLoginRegisterModal,
@@ -45,20 +44,18 @@ class UserManager extends Component {
   }
 
   /* Make authenticated requests */
-  fetch(url, data) {
+  request(url, data) {
     data.headers.Authorization = 'Token ' + this.state.auth_token;
-    return fetch(url, data);
+    return request(url, data);
   }
 
   getUserInfo() {
-    this.fetch(SERVER.api_url + '/auth/me/', {
+    this.request(SERVER.api_url + '/auth/me/', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
       },
     })
-      .then(checkStatus)
-      .then(parseJSON)
       .then(({ username }) => {
         this.setState({
           logged_in: true,
@@ -69,15 +66,13 @@ class UserManager extends Component {
   }
 
   login ({ username, password }, onError) {
-    fetch(SERVER.api_url + '/auth/token/create/', {
+    request(SERVER.api_url + '/auth/token/create/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({'username': username, 'password': password})
     })
-      .then(checkStatus)
-      .then(parseJSON)
       .then((response) => {
         this.setState({
           'auth_token': response.auth_token,
