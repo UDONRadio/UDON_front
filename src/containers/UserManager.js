@@ -19,13 +19,17 @@ class UserManager extends Component {
     this.register = this.register.bind(this);
     this.recover = this.recover.bind(this);
     this.logout = this.logout.bind(this);
+    const auth_token = localStorage.getItem('auth_token')
     this.state = {
       showLoginRegisterModal: this.showLoginRegisterModal,
       logged_in: false,
+      auth_token: auth_token,
       username: null,
       __showModal: false,
       __activeModalForm: 'log in'
     };
+    if (auth_token !== null)
+      this.getUserInfo()
   }
 
   showLoginRegisterModal () {
@@ -59,7 +63,17 @@ class UserManager extends Component {
           username: username
         })
       })
-      .catch((err) => alert(err));
+      .catch((err) => {
+        if (err.status === 401) {
+          this.setState({
+            auth_token: null
+          });
+          localStorage.removeItem('auth_token')
+        }
+        else {
+          alert(err);
+        }
+      });
   }
 
   login ({ username, password }, onError) {
@@ -71,6 +85,7 @@ class UserManager extends Component {
       body: JSON.stringify({'username': username, 'password': password})
     })
       .then((response) => {
+        localStorage.setItem('auth_token', response.auth_token)
         this.setState({
           'auth_token': response.auth_token,
           '__showModal': false
@@ -98,6 +113,7 @@ class UserManager extends Component {
   }
 
   logout () {
+    localStorage.removeItem('auth_token')
     fetch(SERVER.api_url + '/auth/token/destroy/', {
       method: 'POST',
       headers: {
