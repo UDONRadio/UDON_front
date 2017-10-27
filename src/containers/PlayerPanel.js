@@ -4,6 +4,7 @@ import ReactAudioPlayer from 'react-audio-player';
 
 import { SERVER } from '../networkGenerics';
 
+const PLAYER_HEIGHT = '60px';
 
 const getVolumeIconName = (volume, muted) => {
   if (volume <= 0 || muted)
@@ -132,7 +133,7 @@ class PlayerPanel extends Component {
 
   render () {
     this.updateVolume();
-    return <Menu fixed='top' style={{'height':'60px'}}>
+    return <Menu fixed='top' style={{'height':PLAYER_HEIGHT}}>
       <ReactAudioPlayer
         onPlay={this.onPlay}
         onPause={this.onPause}
@@ -158,3 +159,6 @@ class PlayerPanel extends Component {
 }
 
 export default PlayerPanel;
+export {
+  PLAYER_HEIGHT,
+}

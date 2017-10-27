@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 import { Grid } from 'semantic-ui-react';
 import { LiveChatPanel, UploadView } from './';
 import { OnAirView, AboutView, AdmView, ReplayView, Nav } from '../components';
+import { PLAYER_HEIGHT } from './PlayerPanel';
 
 
 const grid_style = {
   'position': 'absolute',
-  'top': '60px',
-  'height': 'calc(100% - 60px)',
+  'top': PLAYER_HEIGHT,
+  'height': 'calc(100% - ' + PLAYER_HEIGHT + ')',
   'paddingTop':'0px',
   'overflow':'hidden'
 }
