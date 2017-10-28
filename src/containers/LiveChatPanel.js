@@ -43,7 +43,7 @@ const ChatInput = (props) => {
       onKeyPress={onKeyPress}
     />
     <Button type='button' disabled>Like</Button>
-    <Button type='submit' style={{'float':'right'}}>Envoyer</Button>
+    <Button type='submit' >Envoyer</Button>
     </form>
   </div>
 }
@@ -113,7 +113,7 @@ class LiveChatPanel extends Component {
   }
 
   render () {
-    return <div style={{'height':'100%', 'position': 'relative'}}>
+    return <div>
       <ChatMessages messages={this.state.messages}></ChatMessages>
       <ChatInput
         logged_in={this.props.user.logged_in}
