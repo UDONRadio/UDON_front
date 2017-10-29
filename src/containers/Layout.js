@@ -3,7 +3,6 @@ import { Grid, Container, Menu } from 'semantic-ui-react';
 import { PlayerPanel, UserManager } from './';
 import { LiveChatPanel, UploadView } from './';
 import { OnAirView, AboutView, AdmView, ReplayView, Logo, UserInfo } from '../components';
-import { PLAYER_HEIGHT } from './PlayerPanel';
 
 
 class Layout extends Component {
@@ -80,29 +79,10 @@ class Layout extends Component {
     const CurrentTab = this.getCurrentTab();
 
     return (
-      <div style={{'width': '100%', 'height': '100%'}}>
+      <div id="layout" className="max-width max-length">
         <PlayerPanel/>
-        <div
-          style={{
-            'position': 'absolute',
-            'top': PLAYER_HEIGHT,
-            'height': 'calc(100% - ' + PLAYER_HEIGHT + ')',
-            'width': '100%',
-            'paddingTop':'0px',
-            'display': 'flex',
-            'flexDirection': 'row',
-            'flexWrap': 'nowrap',
-            'overflow': 'hidden'
-          }}
-        >
-          <div
-            style={{
-              'maxWidth': '210px',
-              'flex': 'none',
-              'zIndex': '1',
-              'backgroundColor': 'bisque'
-            }}
-          >
+        <div id="panel-container" className="dynamic">
+          <div id="left-panel" className="fixed">
             <Logo/>
             <Menu secondary vertical>
               {
@@ -122,10 +102,10 @@ class Layout extends Component {
             </Menu>
             <UserInfo user={this.props.user}/>
           </div>
-          <div style={{'flex': 'auto', 'zIndex': '0', 'backgroundColor':'beige'}}>
+          <div id="middle-panel" className="dynamic">
             <CurrentTab.class user={this.props.user}/>
           </div>
-          <div style={{'flex': 'none', 'zIndex': '1', 'height': '100%', 'width': '340px', 'backgroundColor':'bisque'}}>
+          <div id="right-panel" className="fixed">
             <LiveChatPanel user={this.props.user}/>
           </div>
         </div>

@@ -39,7 +39,7 @@ const ChatInput = (props) => {
       placeholder={placeholder}
       value={props.value}
       onChange={props.onChange}
-      style={{'resize':'none', 'padding':'14px', 'width':'100%'}}
+      style={{'resize':'none', 'padding':'14px'}}
       onKeyPress={onKeyPress}
     />
     <Button type='button' disabled>Like</Button>

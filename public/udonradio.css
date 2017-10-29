@@ -1,0 +1,65 @@
+html, body {
+  height: 100%;
+}
+
+#root {
+  height: 100%;
+}
+
+.max-width {
+  width:100%;
+}
+.max-length {
+  height:100%;
+}
+
+#layout {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+}
+
+#player-panel {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  height: 60px;
+  border-bottom: 1px solid rgba(34, 36, 38, 0.4);
+}
+
+#panel-container {
+  width: 100%;
+  padding-top:0px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  overflow: hidden;
+}
+
+#left-panel {
+  width: 210px;
+  border-right: 1px solid rgba(34, 36, 39, 0.15);
+}
+#right-panel {
+  width: 340px;
+  border-left: 1px solid rgba(34, 36, 38, 0.15);
+}
+#middle-panel {
+  min-width: 0px;
+}
+
+.panel {
+  height: 100%;
+}
+
+/* Flex classes */
+
+.fixed {
+  flex: none
+}
+
+.dynamic {
+  flex: auto
+}
+
+/* ************* */
