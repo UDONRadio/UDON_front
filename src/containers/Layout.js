@@ -77,30 +77,35 @@ class Layout extends Component {
 
   render() {
     const CurrentTab = this.getCurrentTab();
-
+    const makeMenuItem = (tab) => (
+      <Menu.Item
+        name={tab.name}
+        active={tab === this.getCurrentTab()}
+        onClick={() => {
+            if (tab.name !== this.state.current_tab_name)
+              this.changeCurrentView(tab);
+        }}
+        key={tab.name}
+      />
+    )
     return (
-      <div id="layout" className="max-width max-length">
+      <div id="layout" className="max-width max-height">
         <PlayerPanel/>
         <div id="panel-container" className="dynamic">
           <div id="left-panel" className="fixed">
-            <Logo/>
-            <Menu secondary vertical>
-              {
-                this.tabs.filter(this.tabCanShow).map((tab) => {
-                  return <Menu.Item
-                    name={tab.name}
-                    active={tab.name === this.state.current_tab_name}
-                    onClick={() => {
-                        if (tab.name !== this.state.current_tab_name)
-                          this.changeCurrentView(tab);
-                    }}
-                    key={tab.name}
-                    style={{'textAlign':'center'}}
-                  />
-                })
-              }
+            <Menu fluid vertical tabular='left' className='max-height'>
+              <Menu.Item>
+                <Logo/>
+              </Menu.Item>
+              <div className="nav-extra-padding">
+                {
+                  this.tabs.filter(this.tabCanShow).map(makeMenuItem)
+                }
+                <Menu.Item>
+                  <UserInfo user={this.props.user}/>
+                </Menu.Item>
+              </div>
             </Menu>
-            <UserInfo user={this.props.user}/>
           </div>
           <div id="middle-panel" className="dynamic">
             <CurrentTab.class user={this.props.user}/>

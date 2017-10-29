@@ -9,7 +9,7 @@ html, body {
 .max-width {
   width:100%;
 }
-.max-length {
+.max-height {
   height:100%;
 }
 
@@ -38,7 +38,6 @@ html, body {
 
 #left-panel {
   width: 210px;
-  border-right: 1px solid rgba(34, 36, 39, 0.15);
 }
 #right-panel {
   width: 340px;
@@ -63,3 +62,7 @@ html, body {
 }
 
 /* ************* */
+
+.nav-extra-padding {
+  padding-left: 20px;
+}
