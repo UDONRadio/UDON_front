@@ -15,7 +15,7 @@ const ChatMessages = (props) => {
     </List.Item>
   );
 
-  return <List style={{'maxHeight': 'calc(100% - 150px)', 'overflowY': 'auto'}}>
+  return <List className='dynamic' style={{'minHeight': '0px', overflow:'auto'}}>
     {props.messages.map(makeMessage)}
   </List>
 }
@@ -33,7 +33,7 @@ const ChatInput = (props) => {
 
   var placeholder = (props.logged_in) ? "Allez, viens tchatcher !" : "Register to start chatting !";
 
-  return <div style={{'bottom': '0px', 'width':'100%', 'position':'absolute',}}>
+  return <div className="fixed">
     <form onSubmit={props.onSubmit}>
     <TextArea
       placeholder={placeholder}
@@ -113,7 +113,7 @@ class LiveChatPanel extends Component {
   }
 
   render () {
-    return <div>
+    return <div id="live-chat-panel" className="max-height">
       <ChatMessages messages={this.state.messages}></ChatMessages>
       <ChatInput
         logged_in={this.props.user.logged_in}

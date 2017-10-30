@@ -47,8 +47,10 @@ html, body {
   min-width: 0px;
 }
 
-.panel {
-  height: 100%;
+#live-chat-panel {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
 }
 
 /* Flex classes */
