@@ -61,7 +61,15 @@ class LiveChatPanel extends Component {
       'username': null,
       'text': '',
     };
-    this.socket = SocketIO(SERVER.chat_url);
+    this.socket = SocketIO('http://localhost:3000/socket.io');
+    this.socketbis = new WebSocket(SERVER.chat_url);
+    this.socketbis.onmessage = function (e) {
+      alert(e.data);
+    }
+    this.socketbis.onopen = () => {
+      this.socketbis.send("hello world");
+    }
+    if (this.socketbis.readyState == WebSocket.OPEN) this.socketbis.onopen();
     this.socket.on('change username', function (username) {
       this.setState({
         username: username
