@@ -7,10 +7,10 @@ import { SERVER } from '../networkGenerics';
 const ChatMessages = (props) => {
 
   const makeMessage = (msg, index) => (
-    <List.Item key={index}>
+    <List.Item key={index} className='max-width'>
       <List.Content>
         <List.Header>{msg.user}</List.Header>
-        <List.Description>{msg.content}</List.Description>
+        <List.Description style={{'wordWrap': 'break-word'}}>{msg.content}</List.Description>
       </List.Content>
     </List.Item>
   );
@@ -39,11 +39,14 @@ const ChatInput = (props) => {
       placeholder={placeholder}
       value={props.value}
       onChange={props.onChange}
-      style={{'resize':'none', 'padding':'14px'}}
+      style={{'resize':'none', 'padding':'14px', 'width': '100%'}}
       onKeyPress={onKeyPress}
     />
-    <Button type='button' disabled>Like</Button>
-    <Button type='submit' >Envoyer</Button>
+    <div style={{'display': 'flex', 'flex-flow': 'row unwrap'}}>
+      <Button type='button' disabled className="fixed">Like</Button>
+      <div className="dynamic"/>
+      <Button type='submit' className="fixed">Envoyer</Button>
+    </div>
     </form>
   </div>
 }
@@ -113,7 +116,7 @@ class LiveChatPanel extends Component {
   }
 
   render () {
-    return <div id="live-chat-panel" className="max-height">
+    return <div id="live-chat-panel" className="max-height max-width">
       <ChatMessages messages={this.state.messages}></ChatMessages>
       <ChatInput
         logged_in={this.props.user.logged_in}
