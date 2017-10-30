@@ -15,7 +15,7 @@ const getVolumeIconName = (volume, muted) => {
 
 
 const IconButton = (props) => (
-  <Button onClick={props.onClick} style={{'background-color':'transparent'}}>
+  <Button onClick={props.onClick} style={{'backgroundColor':'transparent'}}>
     <Icon name={props.name} size={props.size}/>
   </Button>
 )

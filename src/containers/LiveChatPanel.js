@@ -42,7 +42,7 @@ const ChatInput = (props) => {
       style={{'resize':'none', 'padding':'14px', 'width': '100%'}}
       onKeyPress={onKeyPress}
     />
-    <div style={{'display': 'flex', 'flex-flow': 'row unwrap'}}>
+    <div style={{'display': 'flex', 'flexFlow': 'row unwrap'}}>
       <Button type='button' disabled className="fixed">Like</Button>
       <div className="dynamic"/>
       <Button type='submit' className="fixed">Envoyer</Button>

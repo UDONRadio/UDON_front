@@ -93,7 +93,7 @@ class Layout extends Component {
         <PlayerPanel/>
         <div id="panel-container" className="dynamic">
           <div id="left-panel" className="fixed">
-            <Menu fluid vertical tabular='left' className='max-height'>
+            <Menu fluid vertical tabular className='max-height'>
               <Menu.Item>
                 <Logo/>
               </Menu.Item>
