@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Button, TextArea, List } from 'semantic-ui-react';
-import SocketIO from 'socket.io-client';
 
 import { SERVER } from '../networkGenerics';
 
@@ -61,7 +60,6 @@ class LiveChatPanel extends Component {
       'username': null,
       'text': '',
     };
-    this.socket = SocketIO('http://localhost:3000/socket.io');
     this.socketbis = new WebSocket(SERVER.chat_url);
     this.socketbis.onmessage = function (e) {
       alert(e.data);
@@ -70,16 +68,6 @@ class LiveChatPanel extends Component {
       this.socketbis.send("hello world");
     }
     if (this.socketbis.readyState == WebSocket.OPEN) this.socketbis.onopen();
-    this.socket.on('change username', function (username) {
-      this.setState({
-        username: username
-      });
-    }.bind(this));
-    this.socket.on('chat message', function (name, text) {
-      this.setState({
-        messages: this.state.messages.concat([{user:name, content:text}])
-      })
-    }.bind(this))
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -91,9 +79,9 @@ class LiveChatPanel extends Component {
       ** side when new username is empty
       */
       if (nextProps.user.username !== null)
-        this.socket.emit('change username', nextProps.user.username);
+        ;//this.socket.emit('change username', nextProps.user.username);
       else
-        this.socket.emit('logout');
+        ;//this.socket.emit('logout');
       this.setState({
         username: nextProps.user.username
       });
@@ -108,19 +96,7 @@ class LiveChatPanel extends Component {
     event.preventDefault();
     if (this.state.text === '')
       return ;
-    if (this.state.username) {
-      this.socket.emit('chat message', this.state.text);
-      this.setState({
-        text: ''
-      });
-    }
-    else {
-      this.socket.emit('change username', this.state.text);
-      this.setState({
-        text: '',
-        username: this.state.text,
-      });
-    }
+
   }
 
   render () {
