@@ -8,20 +8,20 @@ const ChatMessages = (props) => {
   const makeMessage = (msg, index) => (
     <List.Item key={index} className='max-width'>
       {
-        msg.type === 'user' && <List.Content>
-          <List.Header>{msg.username}</List.Header>
+        msg.type !== 'server' && <List.Content>
+          <List.Header>{(msg.type === 'user') ? <a>{msg.username}</a>: msg.username}</List.Header>
           <List.Description style={{'wordWrap': 'break-word'}}>{msg.content}</List.Description>
         </List.Content>
       }
       {
         msg.type === 'server' && <List.Content>
-          <List.Description><i>{msg.content}</i></List.Description>
+          <List.Description><i>server</i>: {msg.content}</List.Description>
         </List.Content>
       }
     </List.Item>
   );
 
-  return <List className='dynamic' style={{'minHeight': '0px', overflow:'auto'}}>
+  return <List className='dynamic' style={{'minHeight': '0px', overflow:'auto'}} divided>
     {props.messages.map(makeMessage)}
   </List>
 }
@@ -49,7 +49,11 @@ const ChatInput = (props) => {
     }
   }
 
-  var placeholder = (props.logged_in) ? "Allez, viens tchatcher !" : "Register to start chatting !";
+  var placeholder;
+  if (props.logged_in || props.nickname)
+    placeholder = "Allez, viens tchatcher !"
+  else
+    placeholder = "Enter nickname";
 
   return <div className="fixed">
     <form onSubmit={props.onSubmit}>
@@ -77,19 +81,26 @@ class LiveChatPanel extends Component {
     this.state = {
       'messages' : [],
       'text': '',
-      'connected': false
+      'connected': false,
+      'nickname': ''
     };
   }
 
   componentDidMount () {
     this.props.user.socket.ready(() => {
       this.props.user.socket.on('chat-message', this.appendMessage)
+      this.props.user.socket.on('chat-anon-name', this.changeNick)
       this.props.user.socket.emit('chat-join')
     })
   }
 
   componentWillUnmount () {
     this.props.user.socket.removeListener('chat-message', this.appendMessage)
+    this.props.user.socket.removeListener('chat-anon-name', this.changeNick)
+  }
+
+  changeNick = ({username}) => {
+    this.setState({nickname: username})
   }
 
   appendMessage = (data) => {
@@ -105,7 +116,11 @@ class LiveChatPanel extends Component {
   handleSubmit = (event) => {
     event.preventDefault();
     if (this.state.text !== '' && this.state.connected) {
-      this.props.user.socket.emit('chat-message', {'content': this.state.text})
+
+      if (this.props.user.logged_in || this.state.nickname)
+        this.props.user.socket.emit('chat-message', {'content': this.state.text})
+      else
+        this.props.user.socket.emit('chat-anon-name', {'username': this.state.text})
       this.setState({
         text: ''
       })
@@ -124,6 +139,7 @@ class LiveChatPanel extends Component {
         onSubmit={this.handleSubmit}
         value={this.state.text}
         disabled={!this.state.connected}
+        nickname={this.state.nickname}
       />
     </div>
   }
