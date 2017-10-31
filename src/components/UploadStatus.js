@@ -8,15 +8,16 @@ const Pending = (props) => (
   </Segment>
 )
 
-const Upload = (props) => (
-  <Segment key={props.id}>
+const Upload = (props) => {
+  const content= (props.processed) ? "Ready to tag !" : "Waiting for server processing"
+  return <Segment key={props.id}>
     <List.Icon name={props.up_from ? 'youtube' : 'file audio outline'}/>
     <List.Content>
       <List.Header content={props.up_from || props.audio}/>
-      <List.Description content='Waiting for server processing'/>
+      <List.Description content={content}/>
     </List.Content>
   </Segment>
-)
+}
 
 const UploadStatus = (props) => {
 
