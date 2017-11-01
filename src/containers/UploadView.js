@@ -78,6 +78,7 @@ class UploadView extends Component {
   componentDidMount () {
     this.props.user.socket.ready(() => {
       this.props.user.socket.on('upload-processed', this.setUploadProcessed);
+      this.props.user.socket.emit('upload-subscribe', {});
       this.getUploads(); // force uploads to be retrieved when socket is ready
     })
   }
@@ -90,17 +91,16 @@ class UploadView extends Component {
   setUploadProcessed = ({id}) => {
     var upload = this.state.uploads
     const index = upload.findIndex((elem) => elem.id === id)
-    upload[index].processed = true
-    this.setState({
-      uploads: upload,
-    })
-  }
-
-  followUploadsProcessing = () => {
-    const non_processed = this.state.uploads.filter((item) => !item.processed)
-    this.props.user.socket.emit('upload-subscribe', {
-      pk_list: non_processed.map((item) => item.id)
-    })
+    if (index !== -1) {
+      upload[index].processed = true
+      this.setState({
+        uploads: upload,
+      })
+    }
+    else {
+      /* In case upload is processed before we can even store its id in state */
+      setTimeout(() => this.setUploadProcessed({id: id}), 4000)
+    }
   }
 
   getUploads = () => {
@@ -112,8 +112,7 @@ class UploadView extends Component {
     }).then((data) => {
       this.setState({
         uploads: this.state.uploads.concat(data)
-      }, this.followUploadsProcessing
-      )
+      })
     })
   }
 
@@ -126,7 +125,7 @@ class UploadView extends Component {
     this.setState({
       uploads: this.state.uploads.concat(upload),
       pending: new_pending,
-    }, () => this.followUploadsProcessing() /*XXX does not check socket is available */)
+    })
   }
 
   addPending = (pending) => {
