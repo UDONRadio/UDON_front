@@ -6,6 +6,7 @@ import RecoverForm from './RecoverForm';
 import ReplayView from './ReplayView';
 import UserInfo from './UserInfo';
 import UploadStatus from './UploadStatus';
+import GenericForm from './GenericForm';
 
 
 export {
@@ -16,5 +17,6 @@ export {
   RecoverForm,
   ReplayView,
   UserInfo,
-  UploadStatus
+  UploadStatus,
+  GenericForm
 };

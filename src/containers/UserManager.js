@@ -28,8 +28,8 @@ class UserManager extends Component {
       is_adherent: false,
       auth_token: auth_token,
       username: null,
-      __showModal: false,
-      __activeModalForm: 'log in'
+      __showModal: true,
+      __activeModalForm: 'recover'
     };
   }
 
