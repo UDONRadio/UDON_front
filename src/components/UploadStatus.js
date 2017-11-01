@@ -21,7 +21,8 @@ const Upload = (props) => {
 
 const UploadStatus = (props) => {
 
-  return (props.uploads || props.pending ) && <Segment.Group id="upload-list">
+  const should_display = Boolean(props.uploads.length + props.pending.length)
+  return should_display && <Segment.Group id="upload-list">
     {
       props.pending.map((id) => (
         <Pending key={id} id={id}/>
