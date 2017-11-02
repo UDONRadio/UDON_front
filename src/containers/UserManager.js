@@ -28,8 +28,8 @@ class UserManager extends Component {
       is_adherent: false,
       auth_token: auth_token,
       username: null,
-      __showModal: true,
-      __activeModalForm: 'recover'
+      __showModal: false,
+      __activeModalForm: 'log in'
     };
   }
 
@@ -43,6 +43,8 @@ class UserManager extends Component {
     this.closeConnection();
   }
 
+  login_url = SERVER.api_url + '/auth/token/create/'
+  register_url = SERVER.api_url + '/auth/users/create/'
   /* ************************** SOCKET SPECIFIC ***************************** */
 
   initConnection = () => {
@@ -144,7 +146,7 @@ class UserManager extends Component {
   }
 
   login = ({ username, password }, onError) => {
-    request(SERVER.api_url + '/auth/token/create/', {
+    request(this.login_url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -162,7 +164,7 @@ class UserManager extends Component {
   }
 
   register = ({ username, password, email }, onError) => {
-    request(SERVER.api_url + '/auth/users/create/', {
+    request(this.register_url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -233,6 +235,8 @@ class UserManager extends Component {
           <CurrentForm
             login={this.login}
             register={this.register}
+            login_url={this.login_url}
+            register_url={this.register_url}
             recover={this.recover}
             toggleRecover={() => {this.changeModalForm('recover');}}
           />

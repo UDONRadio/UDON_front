@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Popup } from 'semantic-ui-react';
+import { Form, Popup, Label, Message } from 'semantic-ui-react';
 import { request } from '../networkGenerics';
 
 const makeField = (props) => {
@@ -7,6 +7,7 @@ const makeField = (props) => {
   const form_types = {
     'email':'email',
     'string': 'text',
+    'password': 'password',
     'integer': 'number',
   }
 
@@ -24,6 +25,9 @@ const makeField = (props) => {
     <label>{props.attrs.label}</label>
 
     <input {...input_attrs} onChange={props.onChange}/>
+    { props.errors &&
+      <Label basic color='red' pointing>{props.errors}</Label>
+    }
 
   </Form.Field>
 
@@ -52,16 +56,15 @@ class GenericForm extends Component {
     req(this.props.url, {
       method: 'OPTIONS',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
       }
     }).then((options) => {
       this.setState({
         options: options,
       })
-    }).catch((error) => {
-      console.error(error)
-    })
-  }
+    }).catch(this.onError)
+;  }
 
   getRequest = () => (
     this.props.request || request
@@ -92,16 +95,59 @@ class GenericForm extends Component {
     });
   }
 
-  onError (response) {
-    console.log(response)
+  onError = (response) => {
     this.setState({'loading':false})
     if (response.status === 400) {
       this.setState({'form_errors': response.json})
     }
+    else if (response.networkError)
+      this.setState({'error':response.networkError})
+    else
+      console.log(response)
   }
 
   onSubmit = () => {
-    /*console.log(this.getFieldNames())*/
+
+    var form_data = new FormData()
+    var data = {};
+
+    this.getFieldNames()
+      //.filter((name) => (this.getFieldAttr(name, "read_only") !== true))
+      .map((name) => ({name: name, value: this.state['field_' + name]}))
+      .filter(({name, value}) => value !== undefined)
+      .forEach(({name, value}) => {
+        data[name] = value;
+      })
+
+    if (this.props.onSubmit)
+      return this.props.onSubmit(data, this.onError)
+    else {
+      for (var key in data)
+        form_data.append(key, data[key]);
+      this.getRequest()(this.props.url, {
+        method: this.props.method || "POST",
+        headers: {
+        },
+        body: form_data
+      }).then((data) => {
+        console.log(data);
+      }).catch(this.onError);
+    }
+  }
+
+  getFieldAttr = (fieldname, attr) => {
+    const fields = this.getFields();
+    const actions = this.getActions();
+
+    const field = fields.find((field) => field.name === fieldname);
+    const action = actions[fieldname];
+
+    if (field && field.attrs && field.attrs[attr])
+      return (field.attrs[attr]);
+    else if (action && action[attr])
+      return (action[attr]);
+    else
+      return undefined;
   }
 
   makeFieldsArray = () => {
@@ -109,10 +155,10 @@ class GenericForm extends Component {
     const actions = this.getActions();
 
     this.getFields().forEach((field) => {
-      array.push(Object.assign({
+      array.push({
         name: field.name,
-        attrs: actions[field.name]
-      }, field))
+        attrs: Object.assign({...actions[field.name]}, field.attrs)
+      })
     })
 
     for (var key in actions) {
@@ -126,18 +172,31 @@ class GenericForm extends Component {
   }
 
   render () {
-    return this.state.options && <Form onSubmit={this.onSubmit}>
-      {
-        this.makeFieldsArray().map((props) => ({
-          onChange: this.onChange,
-          value: this.state['field_' + props.name],
-          ...props,
-        })).map(makeField)
-      }
-      <Form.Button content={this.state.options.name}/>
-    </Form>
-  }
+    const warning = <Message
+      warning
+      content={this.state.error}
+    />
+    const errors = <Message
+      error
+      content={this.state.form_errors && this.state.form_errors.non_field_errors}
+    />
 
+    return <div>
+      { this.state.error && warning }
+      { this.state.options && <Form onSubmit={this.onSubmit}>
+        {
+          this.makeFieldsArray().map((props) => ({
+            onChange: (e) => (this.onChange(props.name, e.target.value)),
+            errors: this.state.form_errors && this.state.form_errors[props.name],
+            value: this.state['field_' + props.name],
+            ...props,
+          })).filter(props => props.attrs.show !== false).map(makeField)
+        }
+        <Form.Button content={this.props.name || this.state.options.name}/>
+      </Form> }
+      { this.state.form_errors && this.state.form_errors.non_field_errors && errors}
+    </div>
+  }
 }
 
 export default GenericForm;
