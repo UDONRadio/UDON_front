@@ -13,6 +13,7 @@ class FileUploader extends Component {
       last_rejected : [],
       url_value : '',
       bad_link : false,
+      current: null,
     }
   }
 
@@ -164,6 +165,8 @@ class UploadView extends Component {
           pending={this.state.pending}
           uploads={this.state.uploads}
           loaded_uploads={this.state.loaded_uploads}
+          current={this.state.current}
+          onClick={(current) => this.setState({current: current})}
         />
         <div className="dynamic"/>
       </div >
